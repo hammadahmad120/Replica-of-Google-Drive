@@ -1,0 +1,5 @@
+C:\Users\M. Hammad Shahid\Documents\Visual Studio 2013\Projects\ead_s18_a8_bcsf15m009\Assignment8\Entities\bin\Debug\Entities.dll
+C:\Users\M. Hammad Shahid\Documents\Visual Studio 2013\Projects\ead_s18_a8_bcsf15m009\Assignment8\Entities\bin\Debug\Entities.pdb
+C:\Users\M. Hammad Shahid\Documents\Visual Studio 2013\Projects\ead_s18_a8_bcsf15m009\Assignment8\Entities\obj\Debug\Entities.csprojResolveAssemblyReference.cache
+C:\Users\M. Hammad Shahid\Documents\Visual Studio 2013\Projects\ead_s18_a8_bcsf15m009\Assignment8\Entities\obj\Debug\Entities.dll
+C:\Users\M. Hammad Shahid\Documents\Visual Studio 2013\Projects\ead_s18_a8_bcsf15m009\Assignment8\Entities\obj\Debug\Entities.pdb

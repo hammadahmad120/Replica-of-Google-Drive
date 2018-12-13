@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/MyShared/_MyLayout.cshtml";
+}
+<head>
+    <title>Login</title>
+    <script type="text/javascript" src="~/Scripts/LogEmail.js">
+        function ValidateLogPass() {
+            
+            var log = document.getElementById("login");
+            var pass = document.getElementById("password");
+            if (log.value == "" || pass.value == "") {
+                alert("Login and password both mandatory");
+                return false;
+            }
+            else
+                return true;
+        }
+    </script>
+</head>
+
+<div class="div1">
+    <h2 class="text-danger">Login</h2>
+    <form action='@Url.Content("~/User/Login")' method="post">
+        <div class="form-group">
+            <input type="text" name="login" id="login" value="@ViewBag.Login" placeholder="Login" /> <br /><br />
+        </div>
+        <div class="form-group">
+            <input type="password" name="password" id="password" placeholder="Password" /> <br /><br /><br />
+            <input type="submit" value="Login" onclick="return ValidateLogPass();" class="btn btn-danger" />
+        </div>
+    </form>
+    <hr />
+</div>
+<span style="color:red;">@ViewBag.MSG</span>
+<span style="color:red;">@TempData["tmsg"]</span>

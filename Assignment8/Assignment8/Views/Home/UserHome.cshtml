@@ -1,0 +1,652 @@
+﻿@{
+    ViewBag.Title = "UserHome";
+    Layout = "~/Views/MyShared/_MyLayout.cshtml";
+}
+<head>
+
+    <style>
+
+        .custom-menu {
+    display: none;
+    z-index: 1000;
+    position: absolute;
+    overflow: hidden;
+    border: 1px solid #CCC;
+    white-space: nowrap;
+    font-family: sans-serif;
+    background: #FFF;
+    color: #333;
+    border-radius: 5px;
+    padding: 0;
+}
+
+/* Each of the items in the list */
+.custom-menu li {
+    padding: 8px 12px;
+    cursor: pointer;
+    list-style-type: none;
+    transition: all .3s ease;
+    user-select: none;
+}
+
+.custom-menu li:hover {
+    background-color: #DEF;
+}
+        .MyStl{
+            background-color:yellow;
+            display:inline-block;
+    color:red;
+    border:1px solid #CCC;
+    
+    box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
+    cursor:pointer;
+    vertical-align:middle;
+    width: 150px;
+    height:40px;
+    padding: 5px;
+    text-align: center;
+    margin-right:30px;
+    margin-left:10px;
+    margin-top:10px;
+        }
+        .overlay
+        {
+            position: fixed;
+            display: none;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            z-index: 101;
+            background-color: #000000;
+            opacity: .15;
+            filter: alpha(opacity=15);
+            -moz-opacity: .15;
+        }
+        .web_dialog
+        {
+            left: 50%;
+            top: 50%;
+            width: 200px;
+            height: 200px;
+            background-color: White;
+            border-color: Black;
+            border-style: solid;
+            z-index: 102;
+            display: none;
+            position: fixed;
+            margin-left: -100px;
+            margin-top: -100px;
+        }
+        .dialog_title
+        {
+            background-color: Gray;
+            padding: 2px;
+            color: White;
+            border-bottom: solid 2px #336699;
+        }
+        .dialog_title a
+        {
+            color: White;
+            text-align: right;
+        }
+        .align_right
+        {
+            text-align: right;
+        }
+        .content
+        {
+            padding: 2px;
+        }
+    </style>
+
+    <script>
+        var Pid = 0; //parent id declaration
+        var stk=[];
+        var FToDel=0;
+        var FoToDel=0;
+        stk.push("Home > ");
+        $(document).ready(function () {
+            
+            createNavigate();
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: '/MyApi/GetMainData',
+                data: {'pid':-1},
+                success: function (result) {
+                    if (result.length==0) {
+                        $("#mainDiv").html("");
+                        
+                        var $hed = $("<h2>");
+                        $hed.text("No Folder Created Yet");
+                        $("#mainDiv").html("");
+                        $("#mainDiv").append($hed);
+                    }
+                    else {
+                        $("#mainDiv").html("");
+                        
+                        for (var i = 0; i < result.length; i++) {
+                            var obj = result[i];
+                            var $sp = $('<div id="'+obj.id +'" value="'+obj.ParentFolderId+'">');
+                            $sp.text(obj.Name);
+                            $sp.addClass("MyStl");
+                            //$sp.attr("id", obj.Id);
+                            $("#mainDiv").append($sp);
+                        }
+                    }
+                },
+                error: function (xhr,status,error) {
+                    alert(xhr.responseText);
+                    alert(status);
+                    alert(error);
+                }
+            });//ajax call end
+
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: '/MyApi/GetMainDataFile',
+                data: {'pid':-1},
+                success: function (result) {
+                    if (result.length==0) {
+                        $("#mainDiv1").html("");
+                        
+                        var $hed = $("<h2>");
+                        $hed.text("No Files Created Yet");
+                        $("#mainDiv1").html("");
+                        $("#mainDiv1").append($hed);
+                    }
+                    else {
+                        $("#mainDiv1").html("");
+                        
+                        for (var i = 0; i < result.length; i++) {
+                            var obj = result[i];
+                            var $sp = $('<div id="'+obj.id +'" value="'+obj.ParentFolderId+'">');
+                            var $lnk=$('<a href="#" uname="'+obj.id+'" style="color:red;">Click Here To Download</a><br>');
+                            var icon="class=\"fa fa-file-text-o fa-2x\"";
+
+                            if (obj.FileExt == ".jpg" || obj.FileExt == ".png" || obj.FileExt == ".jpeg" || obj.FileExt == ".gif")
+                            {
+                                icon=" class = \"far fa-file-image\" ";
+                            }
+                            if (obj.FileExt == ".pdf")
+                            {
+                                icon = "class=\"far fa-file-pdf\"";
+                            }
+                            if (obj.FileExt == ".txt")
+                            {
+                                icon = "class=\"fa fa-file-text\"";
+                            }
+                            if (obj.FileExt == ".doc" || obj.FileExt == ".docx")
+                            {
+                                icon = "class=\"far fa-file-word\"";
+                            }
+                            if (obj.FileExt== ".xlsx")
+                            {
+                                icon = "class=\"fa fa-file-excel-o fa-2x\"";
+                            }
+                            if (obj.FileExt == ".mp4" || obj.FileExt == ".avi" || obj.FileExt == ".flv" ||obj.FileExt == ".mpeg" || obj.FileExt== ".WMV" || obj.FileExt == ".MOV") {
+                                icon = " class = \"fa fa-video-camera\" ";
+                            }
+
+
+
+                            var $ic=$('<i '+icon+' style="color:red;font-size: 30px;margin-top:10px;"></i>')
+                            $sp.text(obj.Name);
+                            $sp.addClass("MyStl");
+                            //$sp.attr("id", obj.Id);
+                            $("#mainDiv1").append($ic);
+                            $("#mainDiv1").append($sp);
+                            $("#mainDiv1").append($lnk);
+
+                        }
+                    }
+                },
+                error: function (xhr,status,error) {
+                    alert(xhr.responseText);
+                    alert(status);
+                    alert(error);
+                }
+            });//ajax call end
+
+
+            //---------------------------------------------------
+
+            $(document).on("contextmenu","div#mainDiv1 div", function (event) {
+
+                FToDel=this.id;
+                FoToDel=-1;
+    
+                // Avoid the real one
+                event.preventDefault();
+    
+                // Show contextmenu
+                $(".custom-menu").finish().toggle(100).
+    
+                // In the right position (the mouse)
+                css({
+                    top: event.pageY + "px",
+                    left: event.pageX + "px"
+                });
+            });
+
+            $(document).on("contextmenu","div#mainDiv div", function (event) {
+
+                FoToDel=this.id;
+                FToDel=-1;
+    
+                // Avoid the real one
+                event.preventDefault();
+    
+                // Show contextmenu
+                $(".custom-menu").finish().toggle(100).
+    
+                // In the right position (the mouse)
+                css({
+                    top: event.pageY + "px",
+                    left: event.pageX + "px"
+                });
+            });
+
+
+            // If the document is clicked somewhere
+            $(document).bind("mousedown", function (e) {
+    
+                // If the clicked element is not the menu
+                if (!$(e.target).parents(".custom-menu").length > 0) {
+        
+                    // Hide it
+                    $(".custom-menu").hide(100);
+                }
+            });
+
+
+            // If the menu element is clicked
+            $(".custom-menu li").click(function(){
+    
+                // This is the triggered action name
+               
+                
+
+                if(FToDel==-1)
+                {
+                    
+                    $.ajax({
+                        type: "GET",
+                        dataType: "json",
+                        url: '/MyApi/DeleteFolder',
+                        data: {'fid':FoToDel},
+                        success: function (result) {
+                            alert("Folder successfully Deleted");
+                            GetAllFolders();
+                            GetAllFiles();
+                        },
+                        error: function (xhr, status, error) {
+                            alert(xhr.responseText);
+                            alert(status);
+                            alert(error);
+                        }
+                    });//ajax call end
+
+                }
+                if(FoToDel==-1)
+                {
+                  
+                    $.ajax({
+                        type: "GET",
+                        dataType: "json",
+                        url: '/MyApi/DeleteFile',
+                        data: {'fid':FToDel},
+                        success: function (result) {
+                            alert("File successfully Deleted");
+                            GetAllFolders();
+                            GetAllFiles();
+                        },
+                        error: function (xhr, status, error) {
+                            alert(xhr.responseText);
+                            alert(status);
+                            alert(error);
+                        }
+                    });//ajax call end
+                }
+                // Hide it AFTER the action was triggered
+                $(".custom-menu").hide(100);
+            });
+
+
+
+            //----------------------------------------------------
+
+           
+
+                $(document).on("dblclick","div#mainDiv div", function(){
+  
+                var fid=this.id;
+                var fPid=$(this).attr('value');
+                var fname=$(this).text();
+                stk.push($(this).text()+" >");
+                createNavigate();
+                Pid=fid;
+                GetAllFolders();
+                GetAllFiles();
+
+
+                });
+
+                $(document).on("click","div#mainDiv1 a", function(){ //downloading file
+  
+                    var nam=$(this).attr('uname');
+                    var url = "http://localhost:14211/MyApi/DownloadFile?uname= " + nam;
+                    window.open(url);
+
+
+                });
+
+                $('#btnUpload').click(function () {  
+  
+                    // Checking whether FormData is available in browser  
+                    if (window.FormData !== undefined) {  
+  
+                        var fileUpload = $("#myFile").get(0);  
+                        var files = fileUpload.files;  
+              
+                        // Create FormData object  
+                        var fileData = new FormData();  
+  
+                        // Looping over all files and add it to FormData object  
+                        for (var i = 0; i < files.length; i++) {  
+                            fileData.append(files[i].name, files[i]);  
+                        }  
+                
+  
+                        $.ajax({  
+                            url: '/MyApi/UploadFile',  
+                            type: "POST", 
+                            contentType: false, // Not to set any content header  
+                            processData: false, // Not to process data  
+                            data: fileData,  
+                            success: function (result) {
+                                
+                                alert(result);
+                                setTimeout(GetAllFiles, 3000);
+                                
+                            },  
+                            error: function (err) {  
+                                alert(err.statusText);  
+                            }  
+                        });  
+                    } else {  
+                        alert("FormData is not supported.");  
+                    }  
+
+                   
+                });  
+
+
+            $('#lnkShowDialog').click(function (event) {
+                ShowDialog();
+                //To stop actual/default functionality of the link
+                event.preventDefault();
+                return false;
+            });
+
+            $('#lnkClose').click(function (e) {
+                HideDialog();
+                e.preventDefault();
+            });
+            $('#HomeBtn').click(function (e) {
+                stk=[];
+                stk.push("Home >");
+                Pid=0;
+                createNavigate();
+                GetAllFolders();
+                GetAllFiles();
+            });
+
+            $('#btnOK').click(function (e) {
+
+                var value = $('#txtName').val();
+                if(value=="")
+                {
+                    alert("Enter Folder Name");
+                    return false;
+                }
+                HideDialog();
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    url: '/MyApi/NewFolder',
+                    data: {'fname':value,'pid':Pid},
+                    success: function (result) {
+                        GetAllFolders();      
+                    },
+                    error: function (xhr, status, error) {
+                        alert(xhr.responseText);
+                        alert(status);
+                        alert(error);
+                    }
+                });//ajax call end
+                
+            });//btnOk end
+
+            $('#PdfBtn').click(function (e) {
+
+               
+                var url = "http://localhost:14211/MyApi/GeneratePdf?fid= " + Pid;
+                window.open(url);
+
+                
+                
+            });//PdfBtn end
+
+        });//end of ready
+
+        function createNavigate()
+        {
+            $("#navigate").html("");
+            $("#navigate").append("<hr/>");
+            $("#navigate").append(stk[i]);
+            for(var i=0;i<stk.length;i++)
+            {
+                $("#navigate").append(stk[i]);
+            }
+            $("#navigate").append("<hr/>");
+        }
+        function GetAllFiles()
+        {
+            createNavigate();
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: '/MyApi/GetMainDataFile',
+                data: {'pid':Pid},
+                success: function (result) {
+                    if (result.length==0) {
+                        $("#mainDiv1").html("");
+                        
+                        var $hed = $("<h2>");
+                        $hed.text("No Files Created Yet");
+                        $("#mainDiv1").html("");
+                        $("#mainDiv1").append($hed);
+                    }
+                    else {
+                        $("#mainDiv1").html("");
+                        
+                        for (var i = 0; i < result.length; i++) {
+                            var obj = result[i];
+                            var $sp = $('<div id="'+obj.id +'" value="'+obj.ParentFolderId+'">');
+                            var $lnk=$('<a href="#" uname="'+obj.id+'" style="color:red">Click Here To Download</a><br>');
+
+                            var icon="class=\"fa fa-file-text-o fa-2x\"";
+
+                            if (obj.FileExt == ".jpg" || obj.FileExt == ".png" || obj.FileExt == ".jpeg" || obj.FileExt == ".gif")
+                            {
+                                icon=" class = \"far fa-file-image\" ";
+                            }
+                            if (obj.FileExt == ".pdf")
+                            {
+                                icon = "class=\"far fa-file-pdf\"";
+                            }
+                            if (obj.FileExt == ".txt")
+                            {
+                                icon = "class=\"fa fa-file-text\"";
+                            }
+                            if (obj.FileExt == ".doc" || obj.FileExt == ".docx")
+                            {
+                                icon = "class=\"far fa-file-word\"";
+                            }
+                            if (obj.FileExt== ".xlsx")
+                            {
+                                icon = "class=\"fa fa-file-excel-o fa-2x\"";
+                            }
+                            if (obj.FileExt == ".mp4" || obj.FileExt == ".avi" || obj.FileExt == ".flv" ||obj.FileExt == ".mpeg" || obj.FileExt== ".WMV" || obj.FileExt == ".MOV") {
+                                icon = " class = \"fa fa-video-camera\" ";
+                            }
+
+
+
+                            var $ic=$('<i '+icon+' style="color:red;font-size: 30px;margin-top:10px;"></i>')
+
+                            $sp.text(obj.Name);
+                            $sp.addClass("MyStl");
+                            //$sp.attr("id", obj.Id);
+                            $("#mainDiv1").append($ic);
+                            $("#mainDiv1").append($sp);
+                            $("#mainDiv1").append($lnk);
+                            
+                        }
+                    }
+                },
+                error: function (xhr,status,error) {
+                    alert(xhr.responseText);
+                    alert(status);
+                    alert(error);
+                }
+            });//ajax call end
+        }
+        function GetAllFolders()
+        {
+            //alert(Pid);
+            createNavigate();
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: '/MyApi/GetMainData',
+                data: {'pid':Pid},
+                success: function (result) {
+                    if (result.length == 0) {
+
+                        var $hed = $("<h2>");
+                        $hed.text("No Folder Created Yet");
+                          $("#mainDiv").html("");
+                        $("#mainDiv").append($hed);
+                    }
+                    else {
+                        $("#mainDiv").html("");
+                        
+                        for (var i = 0; i < result.length; i++) {
+                            var obj = result[i];
+                            var $sp = $('<div id="'+obj.id +'" value="'+obj.ParentFolderId+'">');
+                           
+                            $sp.addClass( "MyStl");
+                            $sp.text(obj.Name);
+                           // $sp.attr("id", obj.Id);
+                            $("#mainDiv").append($sp);
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseText);
+                    alert(status);
+                    alert(error);
+                }
+            });//ajax call end
+
+
+        }
+        function ShowDialog() {
+
+            $('#divoverlay').show();
+            $('#modal_dialog').slideDown(500);
+        }
+        function HideDialog() {
+            $('#divoverlay').hide();
+            $('#modal_dialog').slideUp(500);
+        }
+    </script>
+       
+</head>
+
+<nav class="navbar navbar-inverse" style="background-color:blue">
+    <div class="container-fluid">
+        <div class="nav navbar-nav">
+
+            <button style="float:right;margin-right:50px;" id="Reg" onclick="window.location.href='@Url.Content("~/User/Logout")'" class="btn btn-primary">Logout</button>
+        </div>
+    </div>
+</nav>
+
+
+<div id="divoverlay" class="overlay">
+</div>
+<div>
+    <button style="float:right;margin-right:50px;" id="lnkShowDialog" class="btn btn-primary">Create New Folder</button>
+    <button style="float:right;margin-right:50px;" id="PdfBtn" class="btn btn-primary">Generate Meta(PDF)</button>
+    <button style="float:left;margin-left:50px;" id="HomeBtn" class="btn btn-primary">Home</button>
+</div>
+<div id="modal_dialog" class="web_dialog">
+    <table style="width: 100%; border: 0px;" cellpadding="3" cellspacing="0">
+        <tr>
+            <td class="dialog_title">
+                New Folder Name
+            </td>
+            <td class="dialog_title align_right">
+                <a id="lnkClose" href="#">X</a>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div class="content">
+                    Folder Name:<input id="txtName" type="text" /><br /><br />
+                    <button id="btnOK">Create</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div style="margin: 0 auto;text-align: center;width: 300px;" class="p-3 mb-2 bg-danger text-white">
+
+    <br /><br /><br />
+    <input type="file" id="myFile" style="margin-left:70px;" /><br />
+    <input type="button" id="btnUpload" class="btn btn-primary" value="Upload File" style="margin-bottom:40px;" />
+</div>
+
+
+<div class="div1">
+    @{
+        var obj = (Entities.User)Session["user"];
+
+    }
+    <h1 style="text-align:center;color:brown">@obj.Name Drive </h1>
+    <div id="navigate"> </div>
+    <h1>Folders</h1>
+    <div id="mainDiv">
+       
+    </div>
+    <h1>Files</h1>
+    <div id="mainDiv1">
+
+    </div>
+</div>
+
+<ul class='custom-menu'>
+    <li data-action="Del">Delete</li>
+    
+</ul>
+
+
+
+    

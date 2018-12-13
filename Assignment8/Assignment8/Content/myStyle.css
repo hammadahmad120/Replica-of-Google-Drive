@@ -1,0 +1,119 @@
+﻿
+/* Set padding to keep content from hitting the edges */
+
+/* Set width on the form input elements since they're 100% wide by default */
+body{
+    background-color:black;
+}
+.div1 {
+width: 620px;
+    margin-top:100px;
+    margin-left:100px;
+    padding: 30px 30px 20px;
+    box-sizing: border-box;
+    background-color: grey;
+	text-align:center;
+    z-index:1;
+
+}
+input[type=submit],button,input[type=button]
+{
+    width:150px;
+    height:47px;
+}
+/* styles for validation helpers */
+.field-validation-error {
+    color: #b94a48;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+input.input-validation-error {
+    border: 1px solid #b94a48;
+}
+
+input[type="checkbox"].input-validation-error {
+    border: 0 none;
+}
+
+.validation-summary-errors {
+    color: #b94a48;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+.overlay
+        {
+            position: fixed;
+            display: none;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            z-index: 101;
+            background-color: #000000;
+            opacity: .15;
+            filter: alpha(opacity=15);
+            -moz-opacity: .15;
+        }
+        .web_dialog
+        {
+            left: 50%;
+            top: 50%;
+            width: 200px;
+            height: 200px;
+            background-color: White;
+            border-color: Black;
+            border-style: solid;
+            z-index: 102;
+            display: none;
+            position: fixed;
+            margin-left: -100px;
+            margin-top: -100px;
+        }
+        .dialog_title
+        {
+            background-color: Gray;
+            padding: 2px;
+            color: White;
+            border-bottom: solid 2px #336699;
+        }
+        .dialog_title a
+        {
+            color: White;
+            text-align: right;
+        }
+        .align_right
+        {
+            text-align: right;
+        }
+        .content
+        {
+            padding: 2px;
+        }
+
+
+
+
+
+
+.modalpopup {
+    left: 50%;
+    top: 50%;
+    width: 200px;
+    height: 200px;
+    background-color: White;
+    border-color: Black;
+    border-style: solid;
+    z-index: 102;
+    display: none;
+    position: fixed;
+    margin-left: -100px;
+    margin-top: -100px;
+}
